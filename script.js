@@ -17,6 +17,8 @@ var ma ;
 var intval ;
 var sc ;
 
+var end ;
+
 // Init function -> onload body
 function init(){
     startdiv = document.getElementById('startdiv');
@@ -65,6 +67,15 @@ function startGame() {
             movestop();
         }
     });  
+}
+
+function endgame() {
+    myGameArea.canvas.style.webkitFilter = "blur(3px)";
+    var ctx = myGameArea.context;
+    ctx.font = "200px" + " " + "Consolas";
+    ctx.fillStyle = "red";
+    ctx.textAlign = "center";
+    ctx.fillText("GAME OVER", myGameArea.canvas.width/2, myGameArea.canvas.height/2);
 }
 
 function startNextLevel() {
@@ -197,6 +208,7 @@ function updateGameArea() {
     for (i = 0; i < myObstacles.length; i += 1) { //check if crashe with obstacles
       if (myGamePiece.crashWith(myObstacles[i])) {
         myGameArea.stop();
+        endgame() ;
         return;
       }
     }
@@ -233,7 +245,7 @@ function updateGameArea() {
         minHeight = 50;
         maxHeight = y - 150;
         height = Math.floor(Math.random()*(maxHeight-minHeight+1)+minHeight);
-        myBees.push(new component(x/30, y/15, "bee.png", x+100, height, "image"));
+        myBees.push(new component(x/30, y/15, "bee.png", x+150, height, "image"));
     }
     for (i = 0; i < myObstacles.length; i += 1) {
       myObstacles[i].x += -3;
