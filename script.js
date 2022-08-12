@@ -1,6 +1,7 @@
 var myGamePiece;
 var myObstacles = [];
 var myHoneyJars = [];
+var myBees = [];
 var myLevel;
 var myScore;
 
@@ -86,9 +87,8 @@ function nextLevel() {
     intval.innerText = intervalLevel;
     sc.innerText = score;
 
-    clearInterval(myGameArea.interval);
     myGameArea.stop();
-    nextlevelButton.style.display = 'block';
+    nextlevelButton.style.display = 'block';   
 }
 
 var myGameArea = {
@@ -178,6 +178,12 @@ function component(width, height, color, x, y, type) {
         if ((mybottom < othertop) || (mytop > otherbottom) || (myright < otherleft) || (myleft > otherright)) {
           crash = false;
         }
+        if (crash){
+            console.log("crash",otherobj);
+        }
+        if (Object.is(NaN, otherobj.x)){
+            myGameArea.stop();
+        }
         return crash;
       }
 }
@@ -197,12 +203,19 @@ function updateGameArea() {
           return;
         }
     }
+    for (i = 0; i < myBees.length; i += 1) { //check if crash with bee
+        if (myGamePiece.crashWith(myBees[i])) {
+          score -= 5
+          myBees.splice(i,1);
+          return;
+        }
+    }
     myGameArea.clear();
     myGameArea.frameNo += 1;
     if ((myGameArea.frameNo == 1 || everyinterval(intervalLevel)) && myObstacles.length<maxAantObstacles) {
         x = myGameArea.canvas.width;
         minHeight = 50;
-        maxHeight = 400;
+        maxHeight = myGameArea.canvas.height - 200;
         height = Math.floor(Math.random()*(maxHeight-minHeight+1)+minHeight);
         minGap = 200;
         maxGap = 400;
@@ -211,6 +224,13 @@ function updateGameArea() {
         myObstacles.push(new component(10, x - height - gap, "green", x, height + gap));
         myHoneyJars.push(new component(myGameArea.canvas.width/30, myGameArea.canvas.height/15, "honeyjar.png", x, height + gap/3, "image"));
       }
+    if (myGameArea.frameNo == 1 || everyinterval(intervalLevel*0.5) && myObstacles.length<maxAantObstacles) {
+        minHeight = 50;
+        maxHeight = myGameArea.canvas.height - 200;
+        height = Math.floor(Math.random()*(maxHeight-minHeight+1)+minHeight);
+        console.log(height);
+        myBees.push(new component(myGameArea.canvas.width/30, myGameArea.canvas.height/15, "bee.png", myGameArea.canvas.width+100, height, "image"));
+    }
     for (i = 0; i < myObstacles.length; i += 1) {
       myObstacles[i].x += -2;
       myObstacles[i].update();
@@ -218,14 +238,18 @@ function updateGameArea() {
     for (i = 0; i < myHoneyJars.length; i += 1) {
         myHoneyJars[i].x += -2;
         myHoneyJars[i].update();
-      }
+    }
+    for (i = 0; i < myBees.length; i += 1) {
+        myBees[i].x += -2;
+        myBees[i].update();
+    }
     myGamePiece.newPos();
     myGamePiece.update();
     myLevel.text = "LEVEL: " + gameLevel;
     myLevel.update();
     myScore.text = "Score: " + score;
     myScore.update();
-    if (typeof myObstacles[maxAantObstacles-1] !== "undefined" && myObstacles[maxAantObstacles-1].x < 0 ) {
+    if (typeof myObstacles[maxAantObstacles-1] !== "undefined" && myObstacles[maxAantObstacles-1].x < -10 ) {
         console.log("nextlevel");
         nextLevel();
     }
