@@ -2,26 +2,33 @@ var myGamePiece;
 var myObstacles = [];
 var myHoneyJars = [];
 var myLevel;
+var myScore;
 
 var startdiv;
 var nextlevelButton;
 var gameLevel;
+var score;
 var intervalLevel
 var maxAantObstacles;
 
 var lv ;
 var ma ;
 var intval ;
+var sc ;
 
 // init function onload body
 function init(){
     startdiv = document.getElementById('startdiv');
+
     lv = document.getElementById('level');
     ma = document.getElementById('maxaant');
     intval = document.getElementById('interval');
+    sc = document.getElementById('score');
+
     nextlevelButton = document.getElementById('nextlevelbutton');
     nextlevelButton.style.display = 'none';
     gameLevel = 1;
+    score = 0;
     intervalLevel = 300;
     maxAantObstacles = 10;
 }
@@ -33,10 +40,13 @@ function startGame() {
     myGameArea.start();
     myGamePiece = new component(myGameArea.canvas.width/16, myGameArea.canvas.height/8, "bear.png", 10, 120, "image");
     myLevel = new component("30px", "Consolas", "black", 40, 40, "text");
-    myGameArea.start();
+    myScore = new component("30px", "Consolas", "black", 280, 40, "text");
+
     lv.innerText = gameLevel;
     ma.innerText = maxAantObstacles;
     intval.innerText = intervalLevel;
+    sc.innerText = score;
+
     document.addEventListener('keydown', event => {
         if (event.key == 'ArrowLeft') {
             moveleft();
@@ -69,10 +79,12 @@ function nextLevel() {
     maxAantObstacles += 2;
     gameLevel += 1;
     myObstacles.length = 0 ;
+    score += 10 ;
 
     lv.innerText = gameLevel;
     ma.innerText = maxAantObstacles;
     intval.innerText = intervalLevel;
+    sc.innerText = score;
 
     clearInterval(myGameArea.interval);
     myGameArea.stop();
@@ -130,8 +142,7 @@ function component(width, height, color, x, y, type) {
             ctx.fillText(this.text, this.x, this.y);
         } 
         else if (this.type == 'image') {
-            ctx.drawImage(this.image,
-                this.x, this.y, this.width, this.height);
+            ctx.drawImage(this.image, this.x, this.y, this.width, this.height);
         }
         else {
             ctx.fillStyle = color;
@@ -164,10 +175,7 @@ function component(width, height, color, x, y, type) {
         var othertop = otherobj.y;
         var otherbottom = otherobj.y + (otherobj.height);
         var crash = true;
-        if ((mybottom < othertop) ||
-        (mytop > otherbottom) ||
-        (myright < otherleft) ||
-        (myleft > otherright)) {
+        if ((mybottom < othertop) || (mytop > otherbottom) || (myright < otherleft) || (myleft > otherright)) {
           crash = false;
         }
         return crash;
@@ -176,11 +184,18 @@ function component(width, height, color, x, y, type) {
 
 function updateGameArea() {
     var x, y;
-    for (i = 0; i < myObstacles.length; i += 1) { //check if red block crashes with obstacles
+    for (i = 0; i < myObstacles.length; i += 1) { //check if crashe with obstacles
       if (myGamePiece.crashWith(myObstacles[i])) {
         myGameArea.stop();
         return;
       }
+    }
+    for (i = 0; i < myHoneyJars.length; i += 1) { //check if crash with honeyjar
+        if (myGamePiece.crashWith(myHoneyJars[i])) {
+          score += 1
+          myHoneyJars.splice(i,1);
+          return;
+        }
     }
     myGameArea.clear();
     myGameArea.frameNo += 1;
@@ -204,20 +219,17 @@ function updateGameArea() {
         myHoneyJars[i].x += -2;
         myHoneyJars[i].update();
       }
-
     myGamePiece.newPos();
     myGamePiece.update();
     myLevel.text = "LEVEL: " + gameLevel;
     myLevel.update();
+    myScore.text = "Score: " + score;
+    myScore.update();
     if (typeof myObstacles[maxAantObstacles-1] !== "undefined" && myObstacles[maxAantObstacles-1].x < 0 ) {
         console.log("nextlevel");
         nextLevel();
-        myLevel.text = "LEVEL: " + gameLevel;
-        myLevel.update();
     }
-    
   }
-
 
 function moveup() {
     myGamePiece.speedY = -2;
