@@ -6,3 +6,6 @@ canvas {
     width: 80%;
     height: 80%
 }
+body {
+    background-image: url("afb/beehivebackground.jpg");
+}

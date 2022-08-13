@@ -39,7 +39,8 @@ function init(){
 function startGame() {
     // myGamePiece = new component(30, 30, "red", 10, 120);
     myGameArea.start();
-    myGamePiece = new component(myGameArea.canvas.width/16, myGameArea.canvas.height/8, "bear.png", 10, 120, "image");
+    // myGamePiece = new component(myGameArea.canvas.width/16, myGameArea.canvas.height/8, "bear.png", 10, 120, "image");
+    myGamePiece = new component(myGameArea.canvas.width/16, myGameArea.canvas.height/8, "afb/bearwithoutbackground.png", 10, 120, "image");
     myLevel = new component("30px", "Consolas", "black", 40, 40, "text");
     myScore = new component("30px", "Consolas", "black", 280, 40, "text");
 
@@ -237,13 +238,13 @@ function updateGameArea() {
         gap = Math.floor(Math.random()*(maxGap-minGap+1)+minGap);
         myObstacles.push(new component(10, height, "green", x, 0));
         myObstacles.push(new component(10, y - height - gap, "green", x, height + gap));
-        myHoneyJars.push(new component(x/30, y/15, "honeyjar.png", x, height + gap/3, "image"));
+        myHoneyJars.push(new component(x/30, y/15, "afb/honeyjar.png", x, height + gap/3, "image"));
       }
     if (myGameArea.frameNo == 1 || everyinterval(intervalLevel*0.5) && myObstacles.length<maxAantObstacles) {
         minHeight = 50;
         maxHeight = y - 150;
         height = Math.floor(Math.random()*(maxHeight-minHeight+1)+minHeight);
-        myBees.push(new component(x/30, y/15, "bee.png", x+150, height, "image"));
+        myBees.push(new component(x/30, y/15, "afb/bee.png", x+150, height, "image"));
     }
     for (i = 0; i < myObstacles.length; i += 1) {
       myObstacles[i].x += -3;
