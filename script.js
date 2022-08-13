@@ -5,7 +5,6 @@ var myBees = [];        // The Bees
 var myLevel;            // Current Level
 var myScore;            // Current Score
 
-var startdiv;
 var nextlevelButton;
 var gameLevel;
 var score;
@@ -21,8 +20,6 @@ var end ;
 
 // Init function -> onload body
 function init(){
-    startdiv = document.getElementById('startdiv');
-
     lv = document.getElementById('level');
     ma = document.getElementById('maxaant');
     intval = document.getElementById('interval');
@@ -34,11 +31,12 @@ function init(){
     score = 0;
     intervalLevel = 400;
     maxAantObstacles = 10;
+
+    startGame();
 }
 
 // Start game -> onclick startbutton
 function startGame() {
-    startdiv.style.display = 'none';
     // myGamePiece = new component(30, 30, "red", 10, 120);
     myGameArea.start();
     myGamePiece = new component(myGameArea.canvas.width/16, myGameArea.canvas.height/8, "bear.png", 10, 120, "image");
